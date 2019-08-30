@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,8 +18,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
+    private Fruit[]fruits={new Fruit("apple",R.mipmap.p1),new Fruit("apple",R.mipmap.p3),
+            new Fruit("apple",R.mipmap.p4),new Fruit("apple",R.mipmap.p6)};
+    private List<Fruit>fruitList=new ArrayList<>();
+    private FruitAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +61,21 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        initFruits();
+        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycle_view);
+        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter=new FruitAdapter(fruitList);
+        recyclerView.setAdapter(adapter);
 
+    }
+    private  void initFruits(){
+        fruitList.clear();
+        for (int i=0;i<20;i++){
+            Random random=new Random();
+            int index=random.nextInt(fruits.length);
+            fruitList.add(fruits[index]);
+        }
     }
     public boolean  onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
