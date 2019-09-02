@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    private SwipeRefreshLayout swipeRefresh;
     private DrawerLayout drawerLayout;
     private Fruit[]fruits={new Fruit("apple",R.mipmap.p1),new Fruit("apple",R.mipmap.p3),
             new Fruit("apple",R.mipmap.p4),new Fruit("apple",R.mipmap.p6)};
@@ -36,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         drawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
         NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
+        swipeRefresh=(SwipeRefreshLayout)findViewById(R.id.swipe_refresh) ;
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFruits();
+            }
+        });
         ActionBar actionBar = getSupportActionBar();
         if (actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -63,10 +73,32 @@ public class MainActivity extends AppCompatActivity {
         });
         initFruits();
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycle_view);
+        //第一行context 第二列是列数 。下面设置显示效果为2列
         GridLayoutManager layoutManager=new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
         adapter=new FruitAdapter(fruitList);
         recyclerView.setAdapter(adapter);
+
+    }
+    private void refreshFruits(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(2000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initFruits();
+                        adapter.notifyDataSetChanged();
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
 
     }
     private  void initFruits(){

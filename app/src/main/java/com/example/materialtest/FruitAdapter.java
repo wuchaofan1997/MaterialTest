@@ -1,10 +1,13 @@
 package com.example.materialtest;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +39,19 @@ public ViewHolder onCreateViewHolder (ViewGroup parent, int ѵiewType) {
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.fruit_iem,
         parent, false);
-        return new ViewHolder(view);
+        final ViewHolder holder=new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position=holder.getAdapterPosition();
+                Fruit fruit=mFruitList.get(position);
+                Intent intent=new Intent(mContext,FruitActivity.class);
+                intent.putExtra(FruitActivity.fruitname,fruit.getName());
+                intent.putExtra(FruitActivity.fruitimageid,fruit.getIamgeid());
+                mContext.startActivity(intent);
+            }
+        });
+        return holder;
         }
 
     @Override
