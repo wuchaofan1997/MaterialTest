@@ -15,7 +15,7 @@
         />
     <item
         android:id="@+id/settings"
-        android:title="backup"
+        android:title="cancle"
         android:icon="@mipmap/p4"
         app:showAsAction="never"
         />
